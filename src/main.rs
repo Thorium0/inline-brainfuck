@@ -10,7 +10,7 @@ fn main() {
         >.<         (space)
         ++++. ++++++++++.         is
         >.<  (space)
-        [>,.]
-        <[[,]<]
+        [>,.] print input
+        <[,<] clear memory
     }
 }

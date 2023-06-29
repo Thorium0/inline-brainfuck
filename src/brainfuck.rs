@@ -24,6 +24,7 @@ macro_rules! brainfuck {
             let mut c = 0;
             loop {
                 //println!("{} => {} : {} = {}", c, bracket_count, code[c], vec[pointer]);
+                //println!("{:?}", vec);
                 match code[c] {
                     '+' => vec[pointer]+=1,
                     '-' => vec[pointer]-=1,
@@ -52,7 +53,7 @@ macro_rules! brainfuck {
                         if vec[pointer] == 0 {
                             bracket_count -= 1;
                         } else {
-                            for _ in 0..bracket_count {
+                            //for _ in 0..bracket_count {
                             
                                 loop {
                                     if (code[c]) != '[' {
@@ -63,7 +64,7 @@ macro_rules! brainfuck {
                                         break
                                     }
                                 }
-                            }
+                            //}
     
                         }
 
@@ -98,7 +99,7 @@ macro_rules! brainfuck {
                 }
             }
 
-
+            println!("{:?}", vec);
         }
 
     }

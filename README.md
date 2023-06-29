@@ -1,7 +1,7 @@
 # inline-brainfuck
 
 example main.rs
-```
+```Rust
 mod brainfuck;
 
 fn main() {

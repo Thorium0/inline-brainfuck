@@ -42,10 +42,11 @@ macro_rules! brainfuck {
                     }
                     ',' => {
                         if input_index >= input.len() {
-                            break
+                            vec[pointer] = 0;
+                        } else {
+                            vec[pointer] = input[input_index] as u8;
+                            input_index+=1;
                         }
-                        vec[pointer] = input[input_index] as u8;
-                        input_index+=1;
                     },
                     ']' => {
                         if vec[pointer] == 0 {

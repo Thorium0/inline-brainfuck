@@ -89,7 +89,7 @@ macro_rules! brainfuck {
                         }
 
                     },
-                    _ => break
+                    _ => ()
                 }
                 c+=1;
                 if c >= code.len() {

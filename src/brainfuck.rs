@@ -113,7 +113,7 @@ macro_rules! brainfuck {
                 }
             }
 
-            println!("{:?}", vec);
+            println!("\n{:?}", vec);
         }
 
     }

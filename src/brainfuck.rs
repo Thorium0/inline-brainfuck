@@ -18,11 +18,13 @@ macro_rules! brainfuck {
             io::stdin().read_line(&mut input).expect("failed to read line");
             let input: Vec<char> = input.chars().collect();
             let mut input_index = 0;
-            let mut bracket_count = 0;
+            let mut bracket_count = 0; // used for forward jumps only
             let code = code.replace(" ", "").replace("\n", "");
             let code: Vec<char> = code.chars().collect();
             let mut c = 0;
             loop {
+                // Stop if we've reached the end of the program
+                if c >= code.len() { break; }
                 //println!("{} => {} : {} = {}", c, bracket_count, code[c], vec[pointer]);
                 //println!("{:?}", vec);
                 match code[c] {
@@ -35,7 +37,13 @@ macro_rules! brainfuck {
                         }
                      },
                      '<' => {
-                        pointer-=1;
+                        if pointer == 0 {
+                            // Clamp at 0 to avoid underflow. Brainfuck tapes are typically left-bounded in simple interpreters.
+                            // Alternatively, we could grow to the left with vec.insert(0, 0), but clamping is simpler and safe.
+                            pointer = 0;
+                        } else {
+                            pointer-=1;
+                        }
                      }
                     '.' => {
                         print!("{}", vec[pointer] as char);
@@ -50,22 +58,24 @@ macro_rules! brainfuck {
                         }
                     },
                     ']' => {
-                        if vec[pointer] == 0 {
-                            bracket_count -= 1;
-                        } else {
-                            //for _ in 0..bracket_count {
-                            
-                                loop {
-                                    if (code[c]) != '[' {
-                                        //println!("{}", code[c]);
-                                        c-=1;
+                        if vec[pointer] != 0 {
+                            // Jump back to matching '[' taking nesting into account
+                            let mut depth = 1; // we're at a ']'
+                            while c > 0 {
+                                c -= 1;
+                                match code[c] {
+                                    ']' => depth += 1,
+                                    '[' => {
+                                        depth -= 1;
+                                        if depth == 0 { break; }
                                     }
-                                    else {
-                                        break
-                                    }
+                                    _ => {}
                                 }
-                            //}
-    
+                            }
+                            // After this, the main loop will c+=1, moving to the instruction after '['
+                        } else {
+                            // If current cell is zero, just continue execution past ']'
+                            // (no action needed; do not modify c here)
                         }
 
                         
@@ -76,6 +86,10 @@ macro_rules! brainfuck {
                         if vec[pointer] == 0 {
                             loop {
                                 c+=1;
+                                if c >= code.len() {
+                                    // unmatched '['; stop execution safely
+                                    break;
+                                }
                                 if (code[c]) == '[' {
                                     bracket_count += 1;
                                 }
